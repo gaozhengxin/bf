@@ -35,7 +35,7 @@ func (cbf *CBF) K() uint {
 }
 
 func (cbf *CBF) Data() []uint8 {
-	var data []uint8
+	data := make([]uint8, len(cbf.data))
 	copy(data, cbf.data)
 	return data
 }

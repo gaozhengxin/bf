@@ -94,4 +94,6 @@ func TestCBF(t *testing.T) {
 	serialized := cbf.Marshal()
 	unserialized := new(CBF).Unmarshal(serialized)
 	assert.Equal(t, Equals(cbf, unserialized), true, "Unserialized error.")
+
+	assert.Equal(t, cbf.data, cbf.Data(), "Get cbf data error")
 }
