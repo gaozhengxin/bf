@@ -50,7 +50,7 @@ func TestCBF(t *testing.T) {
 	test1 := cbf.Test(input)
 	assert.Equal(t, test1, true, "Test1 should be true.")
 
-	cbf = NewCBF(uint(1048), uint(4)) // 32 slot * 20000 gas / slot = 640000 gas
+	cbf = NewCBF(uint(1024), uint(4)) // 32 slot * 20000 gas / slot = 640000 gas
 
 	inputs := make([][]byte, 0)
 	for i := 0; i < 100; i++ {
