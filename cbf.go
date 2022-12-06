@@ -115,17 +115,15 @@ type Filter interface {
 	TestAndRemove([]byte) bool
 }
 
-func Encode(data []byte) []*big.Int {
-	inputBig := make([]*big.Int, 0)
-
+func EncodeData(data []byte) *big.Int {
 	bigInt := new(big.Int).SetBytes(data)
 	bigInt = new(big.Int).Mod(bigInt, constants.Q)
-	inputBig = append(inputBig, bigInt)
-	return inputBig
+	return bigInt
 }
 
 func Hash(data []byte, k uint) *big.Int {
-	arr := Encode(data)
+	arr := make([]*big.Int, 0)
+	arr = append(arr, EncodeData(data))
 	arr = append(arr, big.NewInt(int64(k)))
 	res, err := mimc7.Hash(arr, nil, 5)
 	if err != nil {
