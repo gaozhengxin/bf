@@ -1,4 +1,4 @@
-module github.com/gaozhengxin/cbf
+module github.com/gaozhengxin/bf
 
 go 1.18
 

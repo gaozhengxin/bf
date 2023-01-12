@@ -97,3 +97,61 @@ func TestCBF(t *testing.T) {
 
 	assert.Equal(t, cbf.data, cbf.Data(), "Get cbf data error")
 }
+
+func TestBF(t *testing.T) {
+	bf := NewBF(uint(128), uint(4))
+
+	input := RandStringBytes(64)
+
+	assert.Equal(t, bf.count, uint(0), "BF count should be 0.")
+
+	test0 := bf.Test(input)
+	assert.Equal(t, test0, false, "Test0 should be false.")
+
+	bf = bf.Add(input).(*BF)
+	assert.Equal(t, bf.count, uint(1), "BF count should be 1.")
+
+	test1 := bf.Test(input)
+	assert.Equal(t, test1, true, "Test1 should be true.")
+
+	bf = NewBF(uint(1024), uint(4)) // 32 slot * 20000 gas / slot = 640000 gas
+
+	inputs := make([][]byte, 0)
+	for i := 0; i < 100; i++ {
+		inputs = append(inputs, RandStringBytes(64))
+	}
+
+	collision := 0
+	for _, input := range inputs {
+		test := bf.TestAndAdd(input)
+		if test {
+			collision++
+		}
+	}
+	t.Logf("Collision %v\n", collision)
+
+	assert.Equal(t, bf.count, uint(100), "BF count should be 0.")
+
+	for _, input := range inputs {
+		test := bf.Test(input)
+		assert.Equal(t, test, true, "Test should be true.")
+	}
+
+	var input2 []byte
+	for {
+		input2 = RandStringBytes(64)
+		test := bf.Test(input2)
+		if !test {
+			bf.Add(input2)
+			break
+		}
+	}
+	test2 := bf.Test(input2)
+	assert.Equal(t, test2, true, "Test2 should be true.")
+
+	serialized := bf.Marshal()
+	unserialized := new(BF).Unmarshal(serialized)
+	assert.Equal(t, Equals(bf, unserialized), true, "Unserialized error.")
+
+	assert.Equal(t, bf.data, bf.Data(), "Get bf data error")
+}
